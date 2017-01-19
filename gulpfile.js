@@ -10,6 +10,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var autoprefixer = require('gulp-autoprefixer');
 var less = require('gulp-less');
 var watchLess = require('gulp-watch-less');
+var del = require('del');
 
 
 gulp.task('less', function () {
@@ -38,14 +39,14 @@ gulp.task('styles',['less'], function () {
 
 gulp.task('scripts', function(cb) {
     pump([
-      gulp.src('src/**/*.js'),
-      concat('js/scripts.min.js'),
-      gulp.dest('dist'),
-      uglify(),
-      gulp.dest('dist')
-    ],
-    cb
-  );
+        gulp.src('src/**/*.js'),
+        concat('js/scripts.min.js'),
+        gulp.dest('dist'),
+        uglify(),
+        gulp.dest('dist')
+        ],
+        cb
+    );
 });
 
 gulp.task('html', function() {
@@ -59,10 +60,10 @@ gulp.task('html', function() {
             'main_home_min_js' : 'dist/js/main_home.min.js',
             'home_min_js' : 'js/home.min.js'
         }))
-        .pipe(cdnify({
-                base: 'http://d2qx2n5ka94rye.cloudfront.net/'
-            })
-        )
+        // .pipe(cdnify({
+        //         base: 'http://d2qx2n5ka94rye.cloudfront.net/'
+        //     })
+        // )
         .pipe(gulp.dest('dist/'));
 });
 
@@ -74,14 +75,15 @@ gulp.task('cdnify', ['html'], function () {
                 base: 'http://d2qx2n5ka94rye.cloudfront.net/'
             })
         )
-        .pipe(gulp.dest('dist/'))
+        .pipe(gulp.dest('dist/'));
 });
 
+// Clean
+gulp.task('clean', ['styles'], function () {
+    return del(['src/css/less']);
+});
 
-
+// Default task
 gulp.task('default', function() {
-    gulp.start('styles', 'scripts' , 'html', 'cdnify');
+    gulp.start('styles', 'scripts' , 'html', 'cdnify', 'clean');
 });
-
-
-
