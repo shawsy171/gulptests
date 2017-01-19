@@ -9,11 +9,20 @@ var cdnify = require('gulp-cdnify');
 var sourcemaps = require('gulp-sourcemaps');
 var autoprefixer = require('gulp-autoprefixer');
 var less = require('gulp-less');
+var watchLess = require('gulp-watch-less');
+
 
 gulp.task('less', function () {
   return gulp.src('src/less/**/*.less')
     .pipe(less())
-    .pipe(gulp.dest('dist/css/less/'));
+    .pipe(gulp.dest('src/css/less/'));
+});
+
+gulp.task('less-watch', function () {
+    // return gulp.src('src/less/**/*.less')
+        watchLess('src/less/**/*.less')
+        .pipe(less())
+        .pipe(gulp.dest('src/css/less/'));
 });
 
 gulp.task('styles',['less'], function () {
@@ -58,9 +67,9 @@ gulp.task('html', function() {
 });
 
 // can i force 'cdnify' to run after 'html' has run
-gulp.task('cdnify', function () {
+gulp.task('cdnify', ['html'], function () {
 
-    return gulp.src(['dist/**/*.{css,html}'])
+    return gulp.src(['dist/**/*.{css,html,jsp}'])
         .pipe(cdnify({
                 base: 'http://d2qx2n5ka94rye.cloudfront.net/'
             })
@@ -68,8 +77,10 @@ gulp.task('cdnify', function () {
         .pipe(gulp.dest('dist/'))
 });
 
+
+
 gulp.task('default', function() {
-    gulp.start('styles', 'scripts' , 'html');
+    gulp.start('styles', 'scripts' , 'html', 'cdnify');
 });
 
 
