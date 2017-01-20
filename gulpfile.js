@@ -132,7 +132,7 @@ gulp.task('dev-build', function() {
     gulp.start('html', 'clean', 'move-img');
 });
 
-gulp.task('production', ['dev-build'] function() {
+gulp.task('production', ['dev-build'], function() {
     gulp.start('move-html', 'delete-dev');
 });
 
