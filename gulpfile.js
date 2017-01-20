@@ -51,7 +51,7 @@ gulp.task('scripts', function(cb) {
     );
 });
 
-gulp.task('html', function () {
+gulp.task('html', ['less'], function () {
     return gulp.src([ 'src/*.{html,jsp}', '!src/index-backup.html' ])
         .pipe(useref())
         .pipe(gulpif('*.css', sourcemaps.init()))
@@ -62,9 +62,8 @@ gulp.task('html', function () {
         .pipe(gulpif('*.css', sourcemaps.write('maps')))
         .pipe(gulpif('*.js', sourcemaps.write('maps')))
         .pipe(cdnify({
-                base: 'http://d2qx2n5ka94rye.cloudfront.net/' + version
-            })
-        )
+                base: 'http://d2qx2n5ka94rye.cloudfront.net/'
+        }))
         .pipe(gulp.dest('dist'));
 });
 
