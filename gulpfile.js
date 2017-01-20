@@ -114,7 +114,7 @@ gulp.task('move-img', function(){
 gulp.task('delete-dev', ['move-html'], function () {
     return del(['src/css',
         'src/images',
-        'src/js'
+        'src/js',
         'src/less']
     );
 });
