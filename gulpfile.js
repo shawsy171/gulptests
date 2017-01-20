@@ -111,7 +111,7 @@ gulp.task('move-img', function(){
  *********************/
 
 // delete's unneeded files for production
-gulp.task('delete-dev', ['move-html'], function () {
+gulp.task('delete-dev', ['move-html', 'clean'], function () {
     return del(['src/css',
         'src/images',
         'src/js',
