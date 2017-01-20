@@ -124,6 +124,10 @@ gulp.task('clean', ['html'], function () {
     return del(['src/css/less']);
 });
 
+/*********************
+ * Build Task
+ *********************/
+
 gulp.task('dev-build', function() {
     gulp.start('html', 'clean', 'move-img');
 });
