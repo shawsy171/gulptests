@@ -111,7 +111,7 @@ gulp.task('move-img', function(){
  *********************/
 
 // delete's unneeded files for production
-gulp.task('delete-dev', ['move-html', 'clean'], function () {
+gulp.task('delete-dev', ['move-html', 'dev-build'], function () {
     return del(['src/css',
         'src/images',
         'src/js',
@@ -134,8 +134,8 @@ gulp.task('dev-build', function() {
     gulp.start('html', 'clean', 'move-img');
 });
 
-gulp.task('production', ['dev-build'], function() {
-    gulp.start('move-html', 'delete-dev');
+gulp.task('production', function() {
+    gulp.start('delete-dev');
 });
 
 // Default task
