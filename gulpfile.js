@@ -46,7 +46,7 @@ gulp.task('styles',['less'], function () {
 gulp.task('scripts', function(cb) {
     pump([
         gulp.src('src/**/*.js'),
-            // concat('js/scripts.min.js'),
+            // concat('js/scripgitsts.min.js'),
             uglify(),
             gulp.dest('dist')
         ],
@@ -70,28 +70,6 @@ gulp.task('html', ['less'], function () {
         )
         .pipe(gulp.dest('dist'));
 });
-
-// gulp.task('html', function () {
-//     pump([
-//         gulp.src([ 'src/*.{html,jsp}', '!src/index-backup.html' ]),
-//             useref(),
-//             gulpif('*.css', sourcemaps.init()),
-//             gulpif('*.js', sourcemaps.init()),
-//             gulpif('*.js', uglify()),
-//             gulpif('*.css', autoprefixer()),
-//             gulpif('*.css', minifyCss()),
-//             gulpif('*.css', sourcemaps.write('maps'))
-//             gulpif('*.js', sourcemaps.write('maps'))
-//             cdnify({
-//                 base: 'http://d2qx2n5ka94rye.cloudfront.net/'
-//             }),
-//             gulp.dest('dist')
-//         ],
-//         cb
-//     );
-// });
-
-
 
 // can I force 'cdnify' to run after 'html' has run
 gulp.task('cdnify', ['html'], function () {
