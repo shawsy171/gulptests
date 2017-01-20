@@ -13,19 +13,22 @@ var minifyCss = require('gulp-minify-css');
 var useref = require('gulp-useref');
 var gulpif = require('gulp-if');
 
+// config
+var src;
+var dist;
 
 // processed the less files
 gulp.task('less', function () {
-  return gulp.src('src/less/**/*.less')
-    .pipe(less())
-    .pipe(gulp.dest('src/css/less/'));
+    return gulp.src('src/less/**/*.less')
+        .pipe(less())
+        .pipe(gulp.dest('src/css/less/'));
 });
 
 // watches for changes on the less files
 gulp.task('less-watch', function () {
-        watchLess('src/less/**/*.less')
-        .pipe(less())
-        .pipe(gulp.dest('src/css/less/'));
+    watchLess('src/less/**/*.less')
+    .pipe(less())
+    .pipe(gulp.dest('src/css/less/'));
 });
 
 // add CSS prefixes and minify's CSS'
@@ -78,13 +81,22 @@ gulp.task('cdnify', ['html'], function () {
         )
         .pipe(gulp.dest('dist/'));
 });
+var moveHTML = [
+    './dist/**/*.{jsp.html}'
+];
 
+gulp.task('move-html', function(){
+  // the base option sets the relative root for the set of files,
+  // preserving the folder structure
+  gulp.src(moveHTML, { base: 'dist/' })
+  .pipe(gulp.dest('src'));
+});
 
 var filesToMove = [
     './src/images/**/*.*'
 ];
 
-gulp.task('move', function(){
+gulp.task('move-img', function(){
   // the base option sets the relative root for the set of files,
   // preserving the folder structure
   gulp.src(filesToMove, { base: 'src/' })
@@ -99,5 +111,5 @@ gulp.task('clean', ['html'], function () {
 
 // Default task
 gulp.task('default', function() {
-    gulp.start('html', 'clean', 'move');
+    gulp.start('html', 'clean', 'move-img');
 });
