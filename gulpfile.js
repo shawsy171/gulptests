@@ -122,7 +122,7 @@ gulp.task('delete-dev', ['move-html', 'dev-build'], function () {
 });
 
 // deletes temporary less folder
-gulp.task('clean', ['html'], function () {
+gulp.task('clean', ['dev-build'], function () {
     return del(['src/css/less']);
 });
 
