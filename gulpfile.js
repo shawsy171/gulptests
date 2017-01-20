@@ -1,73 +1,74 @@
 var gulp = require('gulp');
 var cleanCSS = require('gulp-clean-css');
-var cssnano = require('gulp-cssnano');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var pump = require('pump');
-var htmlreplace = require('gulp-html-replace');
 var cdnify = require('gulp-cdnify');
 var sourcemaps = require('gulp-sourcemaps');
 var autoprefixer = require('gulp-autoprefixer');
 var less = require('gulp-less');
 var watchLess = require('gulp-watch-less');
 var del = require('del');
+var minifyCss = require('gulp-minify-css');
+var useref = require('gulp-useref');
+var gulpif = require('gulp-if');
 
 
+// processed the less files
 gulp.task('less', function () {
   return gulp.src('src/less/**/*.less')
     .pipe(less())
     .pipe(gulp.dest('src/css/less/'));
 });
 
+// watches for changes on the less files
 gulp.task('less-watch', function () {
-    // return gulp.src('src/less/**/*.less')
         watchLess('src/less/**/*.less')
         .pipe(less())
         .pipe(gulp.dest('src/css/less/'));
 });
 
+// add CSS prefixes and minify's CSS'
 gulp.task('styles',['less'], function () {
   return gulp.src('src/**/*.css')
     .pipe(sourcemaps.init())
-        .pipe(less())
         .pipe(autoprefixer())
         .pipe(cleanCSS({compatibility: 'ie8'}))
-        .pipe(concat("css/styles.min.css"))
+        // .pipe(concat("css/styles.min.css"))
     .pipe(sourcemaps.write('maps'))
     .pipe(gulp.dest('dist/'));
 });
 
+// minify's javascipt
 gulp.task('scripts', function(cb) {
     pump([
         gulp.src('src/**/*.js'),
-        concat('js/scripts.min.js'),
-        gulp.dest('dist'),
-        uglify(),
-        gulp.dest('dist')
+            // concat('js/scripts.min.js'),
+            uglify(),
+            gulp.dest('dist')
         ],
         cb
     );
 });
 
-gulp.task('html', function() {
-    gulp.src('src/**/*.{jsp,html}')
-        .pipe(htmlreplace({
-            'css': 'css/styles.min.css',
-            'js': 'js/scripts.min.js',
-            'home-style-min' : 'css/style.min.css',
-            'homeFormValidationMin' : 'js/formValidation.min.js',
-            'homeMmenuMin' : 'js/mmenu.min.js',
-            'main_home_min_js' : 'dist/js/main_home.min.js',
-            'home_min_js' : 'js/home.min.js'
-        }))
-        // .pipe(cdnify({
-        //         base: 'http://d2qx2n5ka94rye.cloudfront.net/'
-        //     })
-        // )
-        .pipe(gulp.dest('dist/'));
+gulp.task('html', function () {
+    return gulp.src([ 'src/*.{html,jsp}', '!src/index-backup.html' ])
+        .pipe(useref())
+        .pipe(gulpif('*.css', sourcemaps.init()))
+        .pipe(gulpif('*.js', sourcemaps.init()))
+            .pipe(gulpif('*.js', uglify()))
+            .pipe(gulpif('*.css', autoprefixer()))
+            .pipe(gulpif('*.css', minifyCss()))
+        .pipe(gulpif('*.css', sourcemaps.write('maps')))
+        .pipe(gulpif('*.js', sourcemaps.write('maps')))
+        .pipe(cdnify({
+                base: 'http://d2qx2n5ka94rye.cloudfront.net/' + version
+            })
+        )
+        .pipe(gulp.dest('dist'));
 });
 
-// can i force 'cdnify' to run after 'html' has run
+// can I force 'cdnify' to run after 'html' has run
 gulp.task('cdnify', ['html'], function () {
 
     return gulp.src(['dist/**/*.{css,html,jsp}'])
@@ -78,12 +79,25 @@ gulp.task('cdnify', ['html'], function () {
         .pipe(gulp.dest('dist/'));
 });
 
+
+var filesToMove = [
+    './src/images/**/*.*'
+];
+
+gulp.task('move', function(){
+  // the base option sets the relative root for the set of files,
+  // preserving the folder structure
+  gulp.src(filesToMove, { base: 'src/' })
+  .pipe(gulp.dest('dist'));
+});
+
 // Clean
-gulp.task('clean', ['styles'], function () {
+// deletes temporary less folder
+gulp.task('clean', ['html'], function () {
     return del(['src/css/less']);
 });
 
 // Default task
 gulp.task('default', function() {
-    gulp.start('styles', 'scripts' , 'html', 'cdnify', 'clean');
+    gulp.start('html', 'clean', 'move');
 });

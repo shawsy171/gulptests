@@ -25,10 +25,9 @@
 
 	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/jquery.slick/1.5.7/slick.css">
 
-	<!-- build:home-style-min -->
-	<link rel="stylesheet" href="css/new_css/style.css">
-	<link rel="stylesheet" href="css/formValidation.css">
-	<link rel="stylesheet" href="css/jquery.mmenu.all.css">
+    <!-- build:css /home/style.jsp.min.css -->
+	<link rel="stylesheet" href="css/red.css">
+	<link rel="stylesheet" href="css/blue.css">
 	<!-- endbuild -->
 
 	<!-- Font-Awesome CDN -->
@@ -80,7 +79,8 @@
                };
             </script>
             <script type="text/javascript" src="https://d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js"></script>
-   	</c:if>
+   	</c:if> , 'html', 'cdnify', 'clean');
+});
 </head>
 <c:set var="bodyClass" value="${bodyClass} ${mobileDevice.isMobileDevice ? 'mobiledevice':''} 'appsme'"/>
 <body class="${fn:trim(bodyClass)}">
@@ -110,36 +110,11 @@
 
 	<!-- FormValidation plugin and the class supports validating Bootstrap form -->
 
-    <!-- build:homeFormValidationMin -->
-	<script src="js/formValidation.popular.min.js"></script>
-	<script src="js/formValidationBootstrap.min.js"></script>
+    <!-- build:js js/scripts.jsp.min.js -->
+	<script type="text/javascript" src="js/script1.js"></script>
+	<script type="text/javascript" src="js/script2.js"></script>
 	<!-- endbuild -->
 
-	<!-- build:homeMmenuMin -->
-	<script src="js/jquery.mmenu.min.all.js"></script>
-	<script src="js/mmenuInit.js"></script>
-	<!-- endbuild -->
-
-	<!-- build:main_home_min_js -->
-	<script src="js/pageNavigation.js"></script>
-	<script src="js/lib/jquery.scrolldepth.min.js"></script>
-	<script src="js/analytics.js"></script>
-	<script src="js/slick.min.js"></script>
-	<script src="js/lib/velocity.min.js"></script>
-	<!-- endbuild -->
-
-	<!-- build:home_min_js -->
-	<script src="js/pageHome.js"></script>
-	<script src="js/exitModal.js"></script>
-	<script src="js/pageContact.js"></script>
-	<script src="js/pageVideo.js"></script>
-	<script src="js/pagePricelist.js"></script>
-	<script src="js/pageFeatures.js"></script>
-	<script src="js/businessShow2015.js"></script>
-    <script src="js/google_analytics_config.js"></script>
-    <script src="js/cookieNotice.js"></script>
-	<script src="js/submissionSuccess.js"></script>
-	<!-- endbuild -->
 
 	<script>window.graphicImagePaths = JSON.parse('${config.graphicImagePaths}');</script>
 
