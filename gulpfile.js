@@ -87,7 +87,7 @@ var moveHTML = [
     './dist/**/*.jsp'
 ];
 
-gulp.task('move-html', function(){
+gulp.task('move-html', ['html'] function(){
   // the base option sets the relative root for the set of files,
   // preserving the folder structure
   gulp.src(moveHTML, { base: 'dist/' })
@@ -105,7 +105,20 @@ gulp.task('move-img', function(){
   .pipe(gulp.dest('dist'));
 });
 
-// Clean
+
+/*********************
+ * Delete tasks
+ *********************/
+
+// delete's unneeded files for production
+gulp.task('delete-dev', ['move-html'] function () {
+    return del(['src/css',
+        'src/images',
+        'src/js'
+        'src/less']
+    );
+});
+
 // deletes temporary less folder
 gulp.task('clean', ['html'], function () {
     return del(['src/css/less']);
@@ -113,6 +126,10 @@ gulp.task('clean', ['html'], function () {
 
 gulp.task('dev-build', function() {
     gulp.start('html', 'clean', 'move-img');
+});
+
+gulp.task('production', function() {
+    gulp.start('move-html');
 });
 
 // Default task
