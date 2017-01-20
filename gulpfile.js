@@ -54,7 +54,7 @@ gulp.task('scripts', function(cb) {
     );
 });
 
-gulp.task('html', function () {
+gulp.task('html', ['less'], function () {
     return gulp.src([ 'src/*.{html,jsp}', '!src/index-backup.html' ])
         .pipe(useref())
         .pipe(gulpif('*.css', sourcemaps.init()))
@@ -65,11 +65,33 @@ gulp.task('html', function () {
         .pipe(gulpif('*.css', sourcemaps.write('maps')))
         .pipe(gulpif('*.js', sourcemaps.write('maps')))
         .pipe(cdnify({
-                base: 'http://d2qx2n5ka94rye.cloudfront.net/' + version
+                base: 'http://d2qx2n5ka94rye.cloudfront.net/'
             })
         )
         .pipe(gulp.dest('dist'));
 });
+
+// gulp.task('html', function () {
+//     pump([
+//         gulp.src([ 'src/*.{html,jsp}', '!src/index-backup.html' ]),
+//             useref(),
+//             gulpif('*.css', sourcemaps.init()),
+//             gulpif('*.js', sourcemaps.init()),
+//             gulpif('*.js', uglify()),
+//             gulpif('*.css', autoprefixer()),
+//             gulpif('*.css', minifyCss()),
+//             gulpif('*.css', sourcemaps.write('maps'))
+//             gulpif('*.js', sourcemaps.write('maps'))
+//             cdnify({
+//                 base: 'http://d2qx2n5ka94rye.cloudfront.net/'
+//             }),
+//             gulp.dest('dist')
+//         ],
+//         cb
+//     );
+// });
+
+
 
 // can I force 'cdnify' to run after 'html' has run
 gulp.task('cdnify', ['html'], function () {
@@ -81,6 +103,7 @@ gulp.task('cdnify', ['html'], function () {
         )
         .pipe(gulp.dest('dist/'));
 });
+
 var moveHTML = [
     './dist/**/*.{jsp.html}'
 ];
