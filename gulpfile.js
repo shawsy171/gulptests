@@ -111,7 +111,7 @@ gulp.task('move-img', function(){
  *********************/
 
 // delete's unneeded files for production
-gulp.task('delete-dev', ['move-html', 'dev-build'], function () {
+gulp.task('delete-dev', ['html'], function () {
     return del(['src/css',
         'src/images',
         'src/js',
@@ -122,7 +122,7 @@ gulp.task('delete-dev', ['move-html', 'dev-build'], function () {
 });
 
 // deletes temporary less folder
-gulp.task('clean', ['dev-build'], function () {
+gulp.task('clean', ['html'], function () {
     return del(['src/css/less']);
 });
 
@@ -135,7 +135,7 @@ gulp.task('dev-build', function() {
 });
 
 gulp.task('production', function() {
-    gulp.start('delete-dev');
+    gulp.start('html', 'clean', 'move-img','move-html', 'delete-dev');
 });
 
 // Default task
