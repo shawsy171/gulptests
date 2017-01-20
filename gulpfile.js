@@ -87,7 +87,7 @@ var moveHTML = [
     './dist/**/*.jsp'
 ];
 
-gulp.task('move-html', ['html'] function(){
+gulp.task('move-html', ['html'], function(){
   // the base option sets the relative root for the set of files,
   // preserving the folder structure
   gulp.src(moveHTML, { base: 'dist/' })
