@@ -132,8 +132,8 @@ gulp.task('dev-build', function() {
     gulp.start('html', 'clean', 'move-img');
 });
 
-gulp.task('production', function() {
-    gulp.start('move-html');
+gulp.task('production', ['dev-build'] function() {
+    gulp.start('move-html', 'delete-dev');
 });
 
 // Default task
