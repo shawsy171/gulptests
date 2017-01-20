@@ -83,7 +83,8 @@ gulp.task('cdnify', ['html'], function () {
 });
 
 var moveHTML = [
-    './dist/**/*.{jsp.html}'
+    './dist/**/*.html',
+    './dist/**/*.jsp'
 ];
 
 gulp.task('move-html', function(){
@@ -110,7 +111,11 @@ gulp.task('clean', ['html'], function () {
     return del(['src/css/less']);
 });
 
+gulp.task('dev-build', function() {
+    gulp.start('html', 'clean', 'move-img');
+});
+
 // Default task
 gulp.task('default', function() {
-    gulp.start('html', 'clean', 'move-img');
+    gulp.start('clean');
 });
