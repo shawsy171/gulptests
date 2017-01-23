@@ -66,7 +66,8 @@ gulp.task('scripts', function(cb) {
  * HTML tasks
  *********************/
 
-gulp.task('html', ['less'], function () {
+// build for development this will put all files in the dist folder
+gulp.task('html-dev', ['less'], function () {
     return gulp.src([ 'src/*.{html,jsp}', '!src/index-backup.html' ])
         .pipe(useref())
         .pipe(gulpif('*.css', sourcemaps.init()))
@@ -81,6 +82,28 @@ gulp.task('html', ['less'], function () {
             })
         )
         .pipe(gulp.dest('dist'));
+});
+
+// build for production this will put
+// the css and js in dist and
+// the html in src
+gulp.task('html-production', ['less'], function () {
+    return gulp.src([ 'src/*.{html,jsp}', '!src/index-backup.html' ])
+        .pipe(useref())
+        .pipe(gulpif('*.css', sourcemaps.init()))
+        .pipe(gulpif('*.js', sourcemaps.init()))
+            .pipe(gulpif('*.js', uglify()))
+            .pipe(gulpif('*.css', autoprefixer()))
+            .pipe(gulpif('*.css', minifyCss()))
+        .pipe(gulpif('*.css', sourcemaps.write('maps')))
+        .pipe(gulpif('*.js', sourcemaps.write('maps')))
+        .pipe(cdnify({
+                base: 'http://d2qx2n5ka94rye.cloudfront.net/'
+            })
+        )
+        .pipe(gulpif('*.js', gulp.dest('dist')))
+        .pipe(gulpif('*.css', gulp.dest('dist')))
+        .pipe(gulp.dest('src'));
 });
 
 // can I force 'cdnify' to run after 'html' has run
