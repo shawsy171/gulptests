@@ -17,6 +17,10 @@ var gulpif = require('gulp-if');
 var src;
 var dist;
 
+/*********************
+ * CSS ans LESS tasks
+ *********************/
+
 // processed the less files
 gulp.task('less', function () {
     return gulp.src('src/less/**/*.less')
@@ -42,6 +46,10 @@ gulp.task('styles',['less'], function () {
     .pipe(gulp.dest('dist/'));
 });
 
+/*********************
+ * javascipt tasks
+ *********************/
+
 // minify's javascipt
 gulp.task('scripts', function(cb) {
     pump([
@@ -53,6 +61,10 @@ gulp.task('scripts', function(cb) {
         cb
     );
 });
+
+/*********************
+ * HTML tasks
+ *********************/
 
 gulp.task('html', ['less'], function () {
     return gulp.src([ 'src/*.{html,jsp}', '!src/index-backup.html' ])
@@ -81,6 +93,10 @@ gulp.task('cdnify', ['html'], function () {
         )
         .pipe(gulp.dest('dist/'));
 });
+
+/*********************
+ * Move tasks
+ *********************/
 
 var moveHTML = [
     './dist/**/*.html',
@@ -130,12 +146,14 @@ gulp.task('clean', ['html'], function () {
  * Build Task
  *********************/
 
+// execution order 'html', 'clean', 'move-img'
 gulp.task('dev-build', function() {
     gulp.start('html', 'clean', 'move-img');
 });
 
+// execution order html, move-html, move-img, clean, delete-dev
 gulp.task('production', function() {
-    gulp.start('html', 'clean', 'move-img','move-html', 'delete-dev');
+    gulp.start('move-html', 'move-img', 'clean', 'delete-dev');
 });
 
 // Default task
