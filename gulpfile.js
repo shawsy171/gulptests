@@ -150,13 +150,13 @@ gulp.task('move-img', function(){
  *********************/
 
 // delete's unneeded files for production
-gulp.task('delete-dev', ['html'], function () {
+gulp.task('delete-dev', ['html-production'], function () {
     return del(['src/css',
         'src/images',
         'src/js',
         'src/less',
-        'dist/*.jsp',
-        'dist/*.html']
+        'src/home',
+        'src/maps']
     );
 });
 
@@ -176,7 +176,7 @@ gulp.task('dev-build', function() {
 
 // execution order html, move-html, move-img, clean, delete-dev
 gulp.task('production', function() {
-    gulp.start('move-html', 'move-img', 'clean', 'delete-dev');
+    gulp.start('delete-dev');
 });
 
 // Default task
