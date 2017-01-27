@@ -87,7 +87,15 @@ gulp.task('html-dev', ['less'], function () {
 // build for production this will put
 // the css and js in dist and
 // the html in src
-gulp.task('html-production', ['less'], function () {
+gulp.tagulp.task('delete-dev', ['html-production'], function () {
+    return del(['src/css',
+        'src/images',
+        'src/js',
+        'src/less',
+        'src/home',
+        'src/maps']
+    );
+});sk('html-production', ['less'], function () {
     return gulp.src([ 'src/*.{html,jsp}', '!src/index-backup.html' ])
         .pipe(useref())
         .pipe(gulpif('*.css', sourcemaps.init()))
