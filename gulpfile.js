@@ -12,10 +12,13 @@ var del = require('del');
 var minifyCss = require('gulp-minify-css');
 var useref = require('gulp-useref');
 var gulpif = require('gulp-if');
+var RevAll = require('gulp-rev-all')
+var revReplace = require("gulp-rev-replace");
+var runSequence = require('run-sequence');
 
 // config
-var src;
-var dist;
+var src = 'src';
+var dist = 'dist';
 
 /*********************
  * CSS ans LESS tasks
@@ -73,29 +76,34 @@ gulp.task('html-dev', ['less'], function () {
         .pipe(gulpif('*.css', sourcemaps.init()))
         .pipe(gulpif('*.js', sourcemaps.init()))
             .pipe(gulpif('*.js', uglify()))
+            // .pipe(gulpif('*.js', RevAll.revision()))
+            .pipe(gulpif('*.js', gulp.dest('dist/tmp')))
             .pipe(gulpif('*.css', autoprefixer()))
             .pipe(gulpif('*.css', minifyCss()))
+            // .pipe(gulpif('*.css', RevAll.revision()))
+            .pipe(gulpif('*.css', gulp.dest('dist/tmp')))
         .pipe(gulpif('*.css', sourcemaps.write('maps')))
         .pipe(gulpif('*.js', sourcemaps.write('maps')))
         .pipe(cdnify({
                 base: 'http://d2qx2n5ka94rye.cloudfront.net/'
             })
         )
+        // .pipe(gulpif('*.css', RevAll.revision()))
+        // .pipe(gulpif('*.{js,css}', RevAll.revision()))
+        // .pipe(gulp.dest('dist'))
+        // .pipe(gulpif('*.js', RevAll.manifestFile()))
+        // .pipe(gulpif('*.css', RevAll.manifestFile()))
+        // .pipe(RevAll.manifestFile())
         .pipe(gulp.dest('dist'));
 });
+
+
+
 
 // build for production this will put
 // the css and js in dist and
 // the html in src
-gulp.tagulp.task('delete-dev', ['html-production'], function () {
-    return del(['src/css',
-        'src/images',
-        'src/js',
-        'src/less',
-        'src/home',
-        'src/maps']
-    );
-});sk('html-production', ['less'], function () {
+gulp.task('html-production', ['less'], function () {
     return gulp.src([ 'src/*.{html,jsp}', '!src/index-backup.html' ])
         .pipe(useref())
         .pipe(gulpif('*.css', sourcemaps.init()))
@@ -123,6 +131,44 @@ gulp.task('cdnify', ['html'], function () {
             })
         )
         .pipe(gulp.dest('dist/'));
+});
+
+gulp.task('RevAll', function () {
+
+    // return gulp.src([ dist + '/css/**/*.css', dist + '/js/**/*.js'])
+    return gulp.src([ 'dist/tmp/**/*.*' ])
+        .pipe(RevAll.revision())
+        .pipe(gulp.dest('dist'))
+        .pipe(RevAll.manifestFile())
+        .pipe(gulp.dest('dist'));
+})
+
+
+
+gulp.task('revReplace',function () {
+    var manifest = gulp.src("./dist/rev-manifest.json");
+
+    return gulp.src(['dist/**/*.*'])
+    .pipe(revReplace({
+        manifest: manifest,
+        replaceInExtensions: ['.js', '.css', '.html','.jsp']
+    }))
+    .pipe(gulp.dest('dist'))
+});
+
+gulp.task('del-rev',function () {
+    return del(['dist/css/**/*.*',
+        'dist/js/**/*.*',
+        'dist/home/**/*.*'
+    ]);
+});
+
+gulp.task('del-temp',function () {
+    return del('dist/tmp');
+});
+
+gulp.task('revSq',function () {
+    runSequence('html-dev', 'del-rev', 'RevAll','revReplace', 'del-temp')
 });
 
 /*********************
